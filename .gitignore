@@ -1,0 +1,45 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+
+# Environment variables
+.env
+
+# IDE settings
+.vscode/
+.idea/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Model files
+*.pkl
+*.joblib
+
+# Logs
+*.log
+
+# Output files (optional - remove these lines if you want to upload outputs)
+outputs/*.png
+outputs/*.html
+outputs/*.csv
+outputs/*.txt
+
+# Temporary files
+*.tmp
+*.bak

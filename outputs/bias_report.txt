@@ -1,0 +1,9 @@
+MODEL FAIRNESS REPORT
+=========================
+
+Accuracy : 0.9000
+Demographic Parity Difference : 0.1667
+
+Gender
+Female    0.750000
+Male      0.583333

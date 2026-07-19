@@ -1,0 +1,13 @@
+Feature,Importance
+HoursPerWeek,0.2442800743348361
+Age,0.20013809458138468
+Workclass_Private,0.18066120063197988
+Education_HS-grad,0.10589394362251507
+Gender_Male,0.09153669795011785
+Education_Masters,0.05972517852517852
+Education_Bachelors,0.05169412967984397
+Workclass_Self-emp,0.02391559955196319
+Education_9th,0.023407353140686475
+Education_Doctorate,0.018747727981494218
+Workclass_State-gov,0.0
+Education_Some-college,0.0

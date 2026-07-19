@@ -1,0 +1,16 @@
+MODEL EXPLAINABILITY REPORT
+============================
+
+               Feature  Importance
+          HoursPerWeek    0.244280
+                   Age    0.200138
+     Workclass_Private    0.180661
+     Education_HS-grad    0.105894
+           Gender_Male    0.091537
+     Education_Masters    0.059725
+   Education_Bachelors    0.051694
+    Workclass_Self-emp    0.023916
+         Education_9th    0.023407
+   Education_Doctorate    0.018748
+   Workclass_State-gov    0.000000
+Education_Some-college    0.000000

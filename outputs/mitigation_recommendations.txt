@@ -1,0 +1,8 @@
+Bias Mitigation Recommendations
+===============================
+
+1. Remove sensitive features if not required.
+2. Balance the training dataset.
+3. Use Fairlearn post-processing methods.
+4. Monitor fairness after every retraining.
+5. Collect diverse training samples.

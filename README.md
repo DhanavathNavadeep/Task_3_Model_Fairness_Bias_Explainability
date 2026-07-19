@@ -1,30 +1,38 @@
 # Model Fairness, Bias and Explainability
 
-## Objective
+## Overview
+This project demonstrates how to build a machine learning model, evaluate fairness metrics, mitigate bias, and explain model predictions.
 
-Evaluate the fairness and interpretability of a machine learning model using SHAP, LIME and Fairlearn.
+## Features
+- Data preprocessing
+- Model training
+- Fairness analysis
+- Bias mitigation
+- Feature importance explainability
+
+## Technologies Used
+- Python
+- Pandas
+- Scikit-learn
+- Fairlearn
+- Joblib
 
 ## Folder Structure
-
-data/
-notebooks/
-src/
-outputs/
-report/
-
-## Libraries
-
-- SHAP
-- LIME
-- Fairlearn
-- Scikit-learn
+Task_3_Model_Fairness_Bias_Explainability/
+│
+├── data/
+├── outputs/
+├── src/
+├── requirements.txt
+└── README.md
 
 ## Outputs
+- model.pkl
+- fairness_metrics.csv
+- bias_report.txt
+- mitigation_report.txt
+- feature_importance.csv
+- explainability_report.txt
 
-- Feature Importance Plot
-- SHAP Summary Plot
-- SHAP Force Plot
-- LIME Explanation
-- Fairness Metrics
-- Bias Report
-- Final PDF Report
+## Author
+Navadeep Dhanavath

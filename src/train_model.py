@@ -1,84 +1,49 @@
 import pandas as pd
 import joblib
+import os
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
-try:
-    from fairlearn.metrics import (
-        MetricFrame,
-        selection_rate,
-        demographic_parity_difference,
-    )
-except ImportError:
-    print("Install Fairlearn:")
-    print("pip install fairlearn")
-    raise
+os.makedirs("outputs", exist_ok=True)
 
-# ----------------------------
-# Load model
-# ----------------------------
-model = joblib.load("../outputs/model.pkl")
-
-# ----------------------------
 # Load dataset
-# ----------------------------
-df = pd.read_csv("../data/dataset.csv")
+df = pd.read_csv("data/dataset.csv")
 
-TARGET = "Income"
-SENSITIVE = "Gender"
+# Encode categorical columns
+for col in df.select_dtypes(include="object").columns:
+    df[col] = LabelEncoder().fit_transform(df[col])
 
-# ----------------------------
-# Features and Target
-# ----------------------------
-X = df.drop(columns=[TARGET])
-X = pd.get_dummies(X, drop_first=True)
+# Features and target
+X = df.drop("Income", axis=1)
+y = df["Income"]
 
-y = df[TARGET]
+# Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
 
-# ----------------------------
+# Train model
+model = RandomForestClassifier(random_state=42)
+model.fit(X_train, y_train)
+
 # Predict
-# ----------------------------
-pred = model.predict(X)
+pred = model.predict(X_test)
 
-# ----------------------------
-# Accuracy
-# ----------------------------
-acc = accuracy_score(y, pred)
+print("Accuracy:", accuracy_score(y_test, pred))
 
-print("=" * 50)
-print("MODEL FAIRNESS REPORT")
-print("=" * 50)
-print(f"Accuracy : {acc:.4f}")
+# Save model
+joblib.dump(model, "outputs/model.pkl")
 
-# ----------------------------
-# Fairness Metrics
-# ----------------------------
-metric = MetricFrame(
-    metrics=selection_rate,
-    y_true=y,
-    y_pred=pred,
-    sensitive_features=df[SENSITIVE]
-)
+# Save train/test data
+X_train.to_csv("outputs/X_train.csv", index=False)
+X_test.to_csv("outputs/X_test.csv", index=False)
+y_train.to_csv("outputs/y_train.csv", index=False)
+y_test.to_csv("outputs/y_test.csv", index=False)
 
-print("\nSelection Rate by Group")
-print(metric.by_group)
-
-dp = demographic_parity_difference(
-    y_true=y,
-    y_pred=pred,
-    sensitive_features=df[SENSITIVE]
-)
-
-print("\nDemographic Parity Difference :", dp)
-
-metric.by_group.to_csv(
-    "../outputs/fairness_metrics.csv"
-)
-
-with open("../outputs/bias_report.txt", "w") as f:
-    f.write("MODEL FAIRNESS REPORT\n")
-    f.write("=========================\n\n")
-    f.write(f"Accuracy : {acc:.4f}\n")
-    f.write(f"Demographic Parity Difference : {dp:.4f}\n\n")
-    f.write(metric.by_group.to_string())
-
-print("\nBias Analysis Completed Successfully!")
+joblib.dump(model, "outputs/model.pkl")

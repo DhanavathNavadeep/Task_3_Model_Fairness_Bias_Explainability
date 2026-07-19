@@ -1,73 +1,69 @@
+import os
 import joblib
-import shap
 import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import LabelEncoder
+from lime.lime_tabular import LimeTabularExplainer
 
 # ----------------------------
-# Load trained model
+# Create outputs folder
 # ----------------------------
-model = joblib.load("../outputs/model.pkl")
+os.makedirs("outputs", exist_ok=True)
 
 # ----------------------------
 # Load dataset
 # ----------------------------
-df = pd.read_csv("../data/dataset.csv")
+df = pd.read_csv("data/dataset.csv")
 
-TARGET = "Income"
+for col in df.select_dtypes(include=["object", "string"]).columns:
+    df[col] = LabelEncoder().fit_transform(df[col])
+
+X = df.drop("Income", axis=1)
+y = df["Income"]
 
 # ----------------------------
-# Prepare features
+# Load trained model
 # ----------------------------
-X = pd.get_dummies(
-    df.drop(columns=[TARGET]),
-    drop_first=True
-)
-
-print("=" * 50)
-print("MODEL EXPLAINABILITY")
-print("=" * 50)
+model = joblib.load("outputs/model.pkl")
 
 # ----------------------------
 # Feature Importance
 # ----------------------------
-if hasattr(model, "feature_importances_"):
+importance = model.feature_importances_
 
-    importance = pd.DataFrame({
-        "Feature": X.columns,
-        "Importance": model.feature_importances_
-    })
+plt.figure(figsize=(8,5))
+plt.bar(X.columns, importance)
+plt.title("Feature Importance")
+plt.xlabel("Features")
+plt.ylabel("Importance")
+plt.xticks(rotation=45)
+plt.tight_layout()
 
-elif hasattr(model, "coef_"):
+plt.savefig("outputs/feature_importance.png", dpi=300)
+plt.close()
 
-    importance = pd.DataFrame({
-        "Feature": X.columns,
-        "Importance": abs(model.coef_[0])
-    })
+print("feature_importance.png saved.")
 
-else:
-    raise Exception("This model does not support feature importance.")
-
-importance = importance.sort_values(
-    by="Importance",
-    ascending=False
+# ----------------------------
+# LIME Explanation
+# ----------------------------
+explainer = LimeTabularExplainer(
+    training_data=X.values,
+    feature_names=X.columns.tolist(),
+    class_names=["<=50K", ">50K"],
+    mode="classification"
 )
 
-print(importance)
-
-# ----------------------------
-# Save CSV
-# ----------------------------
-importance.to_csv(
-    "../outputs/feature_importance.csv",
-    index=False
+exp = explainer.explain_instance(
+    X.iloc[0].values,
+    model.predict_proba,
+    num_features=len(X.columns)
 )
 
-# ----------------------------
-# Save Report
-# ----------------------------
-with open("../outputs/explainability_report.txt", "w") as f:
-    f.write("MODEL EXPLAINABILITY REPORT\n")
-    f.write("============================\n\n")
-    f.write(importance.to_string(index=False))
+fig = exp.as_pyplot_figure()
+fig.tight_layout()
+fig.savefig("outputs/lime_explanation.png", dpi=300)
+plt.close(fig)
 
-print("\nFeature importance saved.")
-print("Explainability Completed Successfully!")
+print("lime_explanation.png saved.")

@@ -28,14 +28,13 @@ SENSITIVE = "Gender"
 # Features & Target
 # -------------------------
 
+# Convert categorical columns to dummy variables
 X = pd.get_dummies(
     df.drop(columns=[TARGET]),
     drop_first=True
 )
 
-X = X.reindex(columns=model.feature_names_in_, fill_value=0)
-
-# Match the features used during training
+# Match the exact feature columns used during training
 X = X.reindex(columns=model.feature_names_in_, fill_value=0)
 
 y = df[TARGET]
